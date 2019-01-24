@@ -1,0 +1,16 @@
+{
+  "best_eval_key": "fakenews_accuracy",
+  "fakenews_classifier": {
+    "penalty": 1.0,
+    "output_fn": {
+      "name": "fakenews_maxpool",
+      "params": {
+      }
+    },
+    "eval_fns": {
+      "fakenews_accuracy": {
+        "name": "fakenews_accuracy"
+      }
+    }
+  }
+}

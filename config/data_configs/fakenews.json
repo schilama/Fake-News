@@ -1,0 +1,41 @@
+{
+  "id": {
+    "conll_idx": 2
+  },
+  "sent_id": {
+    "conll_idx": 1,
+    "label": true
+  },
+  "word_type": {
+    "conll_idx": 3,
+    "feature": true,
+    "vocab": "embeddings/glove.6B.100d.txt",
+    "converter":  {
+      "name": "lowercase"
+    },
+    "oov": true
+  },
+  
+  "parse_head": {
+    "conll_idx": [6, 2],
+    "label": true,
+    "converter":  {
+      "name": "parse_roots_self_loop"
+    }
+  },
+  "domain": {
+    "conll_idx": 0,
+    "vocab": "domain",
+    "converter": {
+      "name": "strip_conll12_domain"
+    }
+  },
+  "fakenews_classifier": {
+    "conll_idx":14,
+    "label":true,
+    "vocab":"fakenews_classifier",
+    "converter":{
+      "name": "default_converter"
+    }
+  }
+}
