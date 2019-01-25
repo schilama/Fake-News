@@ -1,0 +1,148 @@
+layer_task_config (task_config)
+================================
+{
+
+2: {
+'joint_pos_predicate': 
+{'penalty': 1.0, 
+ 'output_fn': {'name': 'joint_softmax_classifier', 
+              'params': {'joint_maps': {'joint_maps': ['joint_pos_predicate_to_gold_pos', 'joint_pos_predicate_to_predicate']}}}, 
+ 'eval_fns': {'predicate_acc': {'name': 'accuracy', 
+                                   'params': {'predictions': {'layer': 'joint_pos_predicate', 
+                                   'output': 'predicate_predictions'},
+                                   'targets': {'label': 'predicate'}}}, 
+              'pos_acc': {'name': 'accuracy',
+                                   'params': {'predictions': {'layer': 'joint_pos_predicate', 'output': 'gold_pos_predictions'}, 'targets': {'label': 'gold_pos'}}}}}},
+
+4: {'parse_head': {'penalty': 1.0, 'output_fn': {'name': 'parse_bilinear', 'params': {}}, 'eval_fns': {'head_accuracy': {'name': 'accuracy'}}}, 
+'parse_label': {'penalty': 0.1, 'output_fn': {'name': 'conditional_bilinear', 'params': {'dep_rel_mlp': {'layer': 'parse_head', 'output': 'dep_rel_mlp'}, 'head_rel_mlp': {'layer': 'parse_head', 'output': 'head_rel_mlp'}, 'parse_preds_train': {'label': 'parse_head'}, 'parse_preds_eval': {'layer': 'parse_head', 'output': 'predictions'}}}, 'eval_fns': {'parse_eval': {'name': 'conll_parse_eval', 'params': {'gold_parse_eval_file': {'value': 'tinymodel/parse_gold.txt'}, 'pred_parse_eval_file': {'value': 'tinymodel/parse_preds.txt'}, 'reverse_maps': {'reverse_maps': ['word', 'parse_label', 'gold_pos']}, 'parse_head_predictions': {'layer': 'parse_head', 'output': 'predictions'}, 'parse_head_targets': {'label': 'parse_head'}, 'words': {'feature': 'word'}, 'pos_targets': {'label': 'gold_pos'}}}}}}, 
+
+11: {'srl': {'penalty': 1.0, 'viterbi': True, 'transition_stats': '/iesl/canvas/schilamakuri/fakenews/LISA/data/transition_probs.tsv', 'output_fn': {'name': 'srl_bilinear', 'params': {'predicate_targets': {'label': 'predicate'}, 'predicate_preds_train': {'label': 'predicate'}, 'predicate_preds_eval': {'layer': 'joint_pos_predicate', 'output': 'predicate_predictions'}}}, 'eval_fns': {'srl_f1': {'name': 'conll_srl_eval', 'params': {'gold_srl_eval_file': {'value': 'tinymodel/srl_gold.txt'}, 'pred_srl_eval_file': {'value': 'tinymodel/srl_preds.txt'}, 'reverse_maps': {'reverse_maps': ['word', 'srl', 'gold_pos']}, 'targets': {'layer': 'srl', 'output': 'targets'}, 'predicate_targets': {'label': 'predicate'}, 'words': {'feature': 'word'}, 'predicate_predictions': {'layer': 'joint_pos_predicate', 'output': 'predicate_predictions'}, 'pos_predictions': {'layer': 'joint_pos_predicate', 'output': 'gold_pos_predictions'}, 'pos_targets': {'label': 'gold_pos'}}}}}}}
+
+layer_attention_config (attention_config)
+==================================
+{5: {'attention_fns': {'parse_heads': {'name': 'copy_from_predicted', 'params': {'train_attention_to_copy': {'label': 'parse_head'}, 'eval_attention_to_copy': {'layer': 'parse_head', 'output': 'scores'}}}}}}
+
+data_config = conll05.json
+=====================================
+{'id': {'conll_idx': 2},
+ 'sent_id': {'conll_idx': 1, 'label': True}, 
+ 'word': {'conll_idx': 3, 'feature': True, 'vocab': 'word', 'oov': False, 'updatable': True}, 
+ 'word_type': {'conll_idx': 3, 'feature': True, 'vocab': 'embeddings/glove.6B.100d.txt', 'converter': {'name': 'lowercase'}, 'oov': True}, 
+ 'gold_pos': {'conll_idx': 4, 'label': True, 'vocab': 'gold_pos'}, 
+ 'auto_pos': {'conll_idx': 5, 'vocab': 'gold_pos'}, 
+ 'parse_head': {'conll_idx': [6, 2], 'label': True, 'converter': {'name': 'parse_roots_self_loop'}}, 'parse_label': {'conll_idx': 7, 'label': True, 'vocab': 'parse_label'}, 
+ 'domain': {'conll_idx': 0, 'vocab': 'domain', 'converter': {'name': 'strip_conll12_domain'}}, 
+ 'predicate': {'conll_idx': 10, 'label': True, 'vocab': 'predicate', 'converter': {'name': 'conll12_binary_predicates'}}, 
+ 'joint_pos_predicate': {'conll_idx': [4, 9], 'label': True, 'vocab': 'joint_pos_predicate', 'converter': {'name': 'joint_converter', 'params': {'component_converters': ['default_converter', 'conll12_binary_predicates']}}, 'label_components': ['gold_pos', 'predicate']}, 
+ 'srl': {'conll_idx': [14, -1], 'type': 'range', 'label': True, 'vocab': 'srl', 'converter': {'name': 'idx_range_converter'}}}
+
+vocab.joint_label_lookup_maps
+=====================================
+{'joint_pos_predicate_to_gold_pos': array([[ 0],
+       [ 1],
+       [ 2],
+       [ 3],
+       [ 4],
+       [ 5],
+
+       [38],
+       [39],
+       [40]], dtype=int32),
+ 'joint_pos_predicate_to_predicate': array([[1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1],
+       [1]], dtype=int32)}
+
+vocab.reverse_maps
+===========================
+{'word': {0: 'Police', 1: 'find', 2: 'mass', 3: 'graves', 4: 'with', 5: 'at', 6: 'least', 7: "'15", 8: 'bodies', 9: "'", 10: 'near', ....., 716: 'comment', 717: 'WA', 718: 'Today'},
+ 'gold_pos': {0: 'NNS', 1: 'VBP', 2: 'NN', ....., 79: 'advcl:by', 80: 'advcl:before'},
+ 'domain': {0: 'fakenews'}, 
+ 'predicate': {0: 'True', 1: 'False'}, 
+ 'joint_pos_predicate': {0: 'NNS/False', 1: 'VBP/False', 2: 'NN/False', 3: 'VBZ/False', 4: 'IN/False', 5: 'JJS/False', 6: 'CD/False', 7: 'POS/False', ....., 40: 'EX/False'}, 
+ 'srl': {0: 'unrelated', 1: 'agree', 2: 'disagree'}}
+
+vocab.vocab_maps
+==========================
+{'word': {'Police': 0, 'find': 1, ......., 'WA': 717, 'Today': 718}, 
+'gold_pos': {'NNS': 0, 'VBP': 1, ....., 'advcl:before': 80}, 
+'domain': {'fakenews': 0}, 
+'predicate': {'True': 0, 'False': 1}, 
+'joint_pos_predicate': {'NNS/False': 0, 'VBP/False': 1, ...., 'EX/False': 40}, 
+'srl': {'unrelated': 0, 'agree': 1, 'disagree': 2}}
+
+
+vocab.vocab_lookups TODO
+=========================
+None
+
+vocab.oovs
+=========================
+{'word': False, 'gold_pos': False, 'parse_label': False, 'domain': False, 'predicate': False, 'joint_pos_predicate': False, 'srl': False}
+
+vocab.vocab_names_sizes
+=========================
+{'word': 719, 'gold_pos': 41, 'parse_label': 81, 'domain': 1, 'predicate': 2, 'joint_pos_predicate': 41, 'srl': 3}
+
+embedding_files 
+========================
+['embeddings/glove.6B.100d.txt']
+
+vocab_lookup_ops
+=========================
+{'word': <tensorflow.python.ops.lookup_ops.HashTable object at 0x7f6643d65b70>, 
+'gold_pos': <tensorflow.python.ops.lookup_ops.HashTable object at 0x7f6643d65860>, 
+'parse_label': <tensorflow.python.ops.lookup_ops.HashTable object at 0x7f6643d65978>, 
+'domain': <tensorflow.python.ops.lookup_ops.HashTable object at 0x7f6643d65ef0>, 
+'predicate': <tensorflow.python.ops.lookup_ops.HashTable object at 0x7f6643d65898>, 
+'joint_pos_predicate': <tensorflow.python.ops.lookup_ops.HashTable object at 0x7f6643d659e8>, 
+'srl': <tensorflow.python.ops.lookup_ops.HashTable object at 0x7f6643d85c88>, 
+'embeddings/glove.6B.100d.txt': <tensorflow.python.ops.lookup_ops.IdTableWithHashBuckets object at 0x7f6643d65668>}
+
+feature_idx_map
+=========================
+{'word': 1, 'word_type': 2}
+
+label_idx_map
+==========================
+{'sent_id': (0, 1), 'gold_pos': (3, 4), 'parse_head': (4, 5), 'parse_label': (5, 6), 'predicate': (6, 7), 'joint_pos_predicate': (7, 8), 'srl': (8, -1)}
+
+
