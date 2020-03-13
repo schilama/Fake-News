@@ -4,7 +4,7 @@ This repo is adapted from https://github.com/strubell/LISA <br/>
 
 Follow the instructions in https://github.com/schilama/Fake-News-Data-Processing to pre-process the data. Store it in the `data` folder.  
 
-Download embeddings (we used GloVe) and store them in the embeddings folder.  
+Download embeddings (used GloVe) and store them in the embeddings folder.  
 
 To train: <br/>
 `bin/train.sh config/fakenews_majority_vote.conf --save_dir=model` <br/>
